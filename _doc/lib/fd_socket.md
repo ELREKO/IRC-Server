@@ -1,3 +1,4 @@
+[<back](<\<socket.h\>.md>) | [main](/)
 
 ---
 
@@ -10,4 +11,3 @@
 | **3**   | Server-Socket                         | Erstellt mit `socket(AF_INET, SOCK_STREAM, 0)` | Lauscht auf eingehende Verbindungen |
 | **4**   | Client-Socket                         | Erstellt durch `accept(server_fdsocket, ...)` | Verwaltet die Verbindung zum Client |
 
----

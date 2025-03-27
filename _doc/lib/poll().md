@@ -1,63 +1,64 @@
-**Übersicht zu `poll()`**:  
+[main](/)
 
 ---
 
-## **🔹 `poll()` – Übersicht**  
-`poll()` ist eine Funktion zur Überwachung mehrerer Dateideskriptoren (Sockets, Dateien, Eingaben), ohne das Programm zu blockieren.  
+# **🔹 `poll()` – Overview**  
+`poll()` is a function used to monitor multiple file descriptors (sockets, files, inputs) without blocking the program.
 
-### **📌 Syntax**
+## **📌 Syntax**
 ```cpp
 #include <poll.h>
 int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 ```
-| Parameter | Beschreibung |
-|-----------|-------------|
-| `fds[]`  | Array von `pollfd`-Strukturen (enthält die zu überwachenden Deskriptoren). |
-| `nfds`   | Anzahl der Deskriptoren im `fds[]`-Array. |
-| `timeout` | Maximale Wartezeit in Millisekunden (`>0`: Zeitlimit, `0`: sofort prüfen, `-1`: unendlich warten). |
+| Parameter  | Description |
+|------------|-------------|
+| `fds[]`    | Array of `pollfd` structures (contains the descriptors to be monitored). |
+| `nfds`     | Number of descriptors in the `fds[]` array. |
+| `timeout`  | Maximum wait time in milliseconds (`>0`: time limit, `0`: check immediately, `-1`: wait indefinitely). |
 
-### **📌 Struktur `pollfd`**
+## **📌 Structure `pollfd`**
 ```cpp
 struct pollfd {
-    int fd;       // Dateideskriptor (z. B. Socket oder Tastatur)
-    short events; // Erwartete Ereignisse (z. B. POLLIN)
-    short revents;// Tatsächlich eingetretene Ereignisse
-};
+    int fd;       // File descriptor (e.g., socket or keyboard)
+    short events; // Expected events (e.g., POLLIN)
+    short revents;// Actually occurred events
+};# `poll()`  
+
 ```
 
-### **📌 Wichtige `events`- und `revents`-Flags**
-| Flag        | Bedeutung |
-|-------------|----------|
-| `POLLIN`    | Daten können gelesen werden (z. B. Tastatur, Socket). |
-| `POLLOUT`   | Schreiben ist möglich, ohne zu blockieren. |
-| `POLLERR`   | Fehlerzustand erkannt. |
-| `POLLHUP`   | Verbindung wurde getrennt. |
+## **📌 Important `events` and `revents` Flags**
+| Flag       | Meaning |
+|------------|----------|
+| `POLLIN`   | Data can be read (e.g., keyboard, socket). |
+| `POLLOUT`  | Writing is possible without blocking. |
+| `POLLERR`  | Error condition detected. |
+| `POLLHUP`  | Connection has been closed. |
 
 ---
 
-## **🔹 Beispiel: Nutzereingabe prüfen, ohne zu blockieren**
+## **🔹 Example: Check User Input Without Blocking**
 ```cpp
 #include <iostream>
 #include <poll.h>
-#include <unistd.h> // Für STDIN_FILENO
+#include <unistd.h> // For STDIN_FILENO
 
 int main() {
     struct pollfd fd{};
-    fd.fd = STDIN_FILENO; // Standard-Eingabe (Tastatur)
-    fd.events = POLLIN;   // Prüfe, ob Eingaben verfügbar sind
+    fd.fd = STDIN_FILENO; // Standard input (keyboard)
+    fd.events = POLLIN;   // Check if input is available
 
-    std::cout << "Drücke eine Taste (5 Sekunden Wartezeit)...\n";
+    std::cout << "Press a key (5-second timeout)...\n";
 
-    int ret = poll(&fd, 1, 5000); // Timeout: 5000 ms = 5 Sekunden
+    int ret = poll(&fd, 1, 5000); // Timeout: 5000 ms = 5 seconds
 
     if (ret > 0 && (fd.revents & POLLIN)) {
         std::string input;
         std::getline(std::cin, input);
-        std::cout << "Eingabe erhalten: " << input << std::endl;
+        std::cout << "Input received: " << input << std::endl;
     } else if (ret == 0) {
-        std::cout << "Timeout: Keine Eingabe erkannt.\n";
+        std::cout << "Timeout: No input detected.\n";
     } else {
-        std::cerr << "Fehler bei poll()!\n";
+        std::cerr << "Error in poll()!\n";
     }
 
     return 0;
