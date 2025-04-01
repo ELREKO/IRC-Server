@@ -116,8 +116,8 @@ end
 
 ## Installation
 ``` bash
-git clone <repository_url>
-cd ft_irc
+git clone https://github.com/ELREKO/chatserver_irc_standard.git irc_server
+cd irc_server
 make
 ```
 ## Usage
